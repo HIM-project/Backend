@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Kakao Login</title>
+</head>
+<body>
+<a href="https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=0c4ff7fd83f3b1b326730ef7a74870ca&redirect_uri=http://localhost:8080/login/oauth2/code/kakao">Kakao 로그인</a>
+
+<h2>Welcome, <span th:text="${User}"></span>!</h2>
+</body>
+</html>
