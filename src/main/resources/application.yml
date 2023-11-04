@@ -1,0 +1,41 @@
+spring:
+ security:
+  oauth2:
+   client:
+    registration:
+     kakao:
+      client_id: ENC(zBYzGGsI+50QzqKVDJyTvjhXN1PMH57dZK14NEbJT2wI/Z4i+kkki8m58fV2jGvx)
+      client_secret: ENC(Smf3Zar+MMJnlMHkeP16QB6slCwk3dGo8l9nqI6ijcqxL9rZHuwSxv3qH1miY0BI)
+      client-authentication-method: POST
+      redirect_uri: http://localhost:8080/login/oauth2/code/kakao
+      authorization-grant-type: authorization_code
+     scope:
+     - profile_nickname
+     - profile_image
+     - account_email
+    provider:
+      kakao:
+       authorizationUri: https://kauth.kakao.com/oauth/authorize
+       tokenUri: https://kauth.kakao.com/oauth/token
+       userInfoUri: https://kapi.kakao.com/v2/user/me
+       userNameAttribute: id
+
+
+ jasypt:
+  encryptor:
+   bean: jasyptStringEncryptor
+
+ redis:
+  host: ENC(+gIBBLHWNAF/Wos05k4ktyynvd5mKJvjd6k8XdcuzpNpxeDyTh50MZUgCrfKpFrkV3lKdbRt4Tiw/jPqMmDgfQ==)
+  port: ENC(Hekgpz2rxbwR7OZ+TanLLA==)
+  password: ENC(96Qqn2Txi31pfLz8exSaWq+rWGWBVmUUh0uAbRXAEFYKd0ohtOK+ai8cYdQ63zHH)
+ jpa:
+  hibernate:
+    ddl-auto: update
+  database: mysql
+  show-sql: false
+ datasource:
+  driver-class-name: com.mysql.cj.jdbc.Driver
+  username: root
+  password: 12341234
+  url: jdbc:mysql://localhost:3306/HIMProject
