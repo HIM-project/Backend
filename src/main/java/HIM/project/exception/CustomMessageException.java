@@ -1,5 +1,6 @@
-package HIM.project.common;
+package HIM.project.exception;
 
+import HIM.project.common.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
