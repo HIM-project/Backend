@@ -20,7 +20,7 @@ public class RedisService {
         value.set(userId,refreshToken,expirationTime, TimeUnit.SECONDS);
     }
     public String getValues(String userId){
-        ValueOperations<Long, String> values = redisTemplate.opsForValue();
+        ValueOperations<String, String> values = redisTemplate.opsForValue();
         return values.get(userId);
     }
 }

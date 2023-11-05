@@ -1,8 +1,15 @@
 package HIM.project.service.jwt;
 
 
+import HIM.project.common.CustomException;
+import HIM.project.common.ErrorCode;
+import HIM.project.common.ResponseDto;
 import HIM.project.dto.KakaoProfileDto;
+import HIM.project.entity.RefreshToken;
 import HIM.project.entity.User;
+import HIM.project.respository.RefreshTokenRepository;
+import HIM.project.respository.UserRepository;
+import HIM.project.service.RedisService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
@@ -25,6 +32,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -36,9 +44,17 @@ import java.util.Date;
 @RequiredArgsConstructor
 @Slf4j
 public class JwtTokenProvider {
+
+    private final String AuthHeader = "Authorization";
     private String secretKey = "Super-Coding";
 
     final private UserDetailsService userDetailsService;
+
+    private final RefreshTokenRepository refreshTokenRepository;
+
+    private final RedisService redisService;
+
+    private final UserRepository userRepository;
 
     final long AccessTokenValidMilliSecond =  1000L * 60 * 60; // 1시간
     final long RefreshTokenValidMilliSecond = 1000L *60 * 60 *24 * 7; //  1주일
@@ -49,18 +65,17 @@ public class JwtTokenProvider {
                 .encodeToString(secretKey.getBytes());
     }
     public String resolveToken(HttpServletRequest request) {
-        String token = request.getHeader("Authorization");
+        String token = request.getHeader(AuthHeader);
         return token==null ? null : token.substring(7);
     }
 
     public Long getUserId(String jwtToken){
-        log.info("getMemberIdx jwtToken {}" ,jwtToken);
         Claims claims = Jwts.parser()
                 .setSigningKey(secretKey)
                 .parseClaimsJws(jwtToken)
                 .getBody();
-        Long userId = (Long) claims.get("user_id");
-        return userId;
+        Integer userId = (Integer) claims.get("userId");
+        return userId.longValue();
     }
     public String createAccessToken(User user){
         Claims claims = Jwts.claims().setSubject("userAccessToken");
@@ -132,5 +147,22 @@ public class JwtTokenProvider {
         else return null;
     }
 
+    public ResponseEntity<?> reissuance(String accessToken,HttpServletResponse response) {
+
+        Long userId = getUserId(accessToken);
+
+        String refreshToken = redisService.getValues(String.valueOf(userId));
+
+        if (refreshToken == null){
+            throw new CustomException(ErrorCode.ACCESSTOKEN_NOT_MATCH);
+        }
+        User user = userRepository.findAllByUserId(getUserId(refreshToken)).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        String token = createAccessToken(user);
+
+        response.setHeader(AuthHeader,token);
+
+        return ResponseEntity.ok("재발급에 성공하였습니다");
+    }
 }
 
