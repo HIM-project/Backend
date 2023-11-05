@@ -1,5 +1,7 @@
 package HIM.project.service;
 
+import HIM.project.common.ErrorCode;
+import HIM.project.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -22,5 +24,14 @@ public class RedisService {
     public String getValues(String userId){
         ValueOperations<String, String> values = redisTemplate.opsForValue();
         return values.get(userId);
+    }
+
+    public void deleteDictionary(String userId){
+        try {
+            redisTemplate.delete(userId);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+        }
     }
 }
