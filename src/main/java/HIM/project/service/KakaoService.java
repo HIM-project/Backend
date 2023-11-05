@@ -1,7 +1,5 @@
 package HIM.project.service;
 
-import HIM.project.common.CustomException;
-import HIM.project.common.ErrorCode;
 import HIM.project.common.ResponseDto;
 import HIM.project.dto.KakaoProfileDto;
 import HIM.project.dto.KakaoUrlDto;
@@ -26,7 +24,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -129,7 +126,7 @@ public class KakaoService {
         return parseJson(response.getBody(), KakaoProfileDto.class);
     }
 
-    private <T> T parseJson(String json, Class<T> valueType) {
+    private KakaoProfileDto parseJson(String json, Class<KakaoProfileDto> valueType) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             return objectMapper.readValue(json, valueType);
