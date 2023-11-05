@@ -48,7 +48,7 @@ public class KakaoService {
 
     public OAuthToken createOAuthToken(String code) {
 
-        RestTemplate rt = new RestTemplate();
+        RestTemplate restTemplate = new RestTemplate();
 
         //HttpHeader 오브젝트 생성
         HttpHeaders headers = new HttpHeaders();
@@ -57,107 +57,49 @@ public class KakaoService {
         //HttpBody 오브젝트 생성
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("grant_type", "authorization_code");
+        params.add("grant_type",kakaoUrlDto.getGrant_type());
         params.add("client_id", kakaoUrlDto.getClient_id());
         params.add("redirect_uri", kakaoUrlDto.getRedirect_uri());
         params.add("code", code);
         params.add("client_secret", kakaoUrlDto.getClient_secret());
         //Header와 Body를 하나의 오브젝트에 담기
-        HttpEntity<MultiValueMap<String,String>> kakaoTokenRequest =
-                new HttpEntity<>(params,headers);
+        HttpEntity<MultiValueMap<String,String>> kakaoTokenRequest =  new HttpEntity<>(params,headers);
 
 
 
-        ResponseEntity<String> response = rt.exchange(
+        ResponseEntity<OAuthToken> response = restTemplate.exchange(
                 kakaoUrlDto.getToken_uri(),
                 HttpMethod.POST,
                 kakaoTokenRequest,
-                String.class
+                OAuthToken.class
         );
 
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        OAuthToken oAuthToken = null;
-        try {
-            oAuthToken = objectMapper.readValue(response.getBody(),OAuthToken.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-        return oAuthToken;
+        return response.getBody();
     }
-    public User createOAuthMember(HttpHeaders headers2, RestTemplate rt2) {
+    public User createOAuthMember(HttpHeaders headers, RestTemplate rt) {
         //Header와 Bod를 하나의 오브젝트에 담기
-        HttpEntity<MultiValueMap<String,String>> kakaoProfileRequest =
-                new HttpEntity<>(headers2);
-
-        ResponseEntity<String> response2 = rt2.exchange(
-                kakaoUrlDto.getUserInfo_uri(),
-                HttpMethod.POST,
-                kakaoProfileRequest,
-                String.class
-        );
-        ObjectMapper objectMapper2 = new ObjectMapper();
-        KakaoProfileDto kakaoProfile = null;
-        try {
-            kakaoProfile = objectMapper2.readValue(response2.getBody(),KakaoProfileDto.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-        // 필요한거 닉네임, 이메일, 주소, 이미지, 휴대폰 전화번호
-
+        KakaoProfileDto kakaoProfile = fetchKakaoProfile(headers, rt);
 
         User user = User.builder()
-                    .userName(kakaoProfile.kakao_account.profile.nickname)
-                    .userThumbnail(kakaoProfile.kakao_account.profile.profile_image_url)
-                    .email(kakaoProfile.kakao_account.email)
-                    .build();
+                .userName(kakaoProfile.kakao_account.profile.nickname)
+                .userThumbnail(kakaoProfile.kakao_account.profile.profile_image_url)
+                .email(kakaoProfile.kakao_account.email)
+                .build();
 
-            userRepository.save(user);
+        userRepository.save(user);
         return user;
     }
-    public Boolean checkUser(HttpHeaders headers2, RestTemplate rt2) {
-        HttpEntity<MultiValueMap<String,String>> kakaoProfileRequest =
-                new HttpEntity<>(headers2);
-
-        ResponseEntity<String> response2 = rt2.exchange(
-                kakaoUrlDto.getUserInfo_uri(),
-                HttpMethod.POST,
-                kakaoProfileRequest,
-                String.class
-        );
-        ObjectMapper objectMapper2 = new ObjectMapper();
-        KakaoProfileDto kakaoProfile = null;
-        try {
-            kakaoProfile = objectMapper2.readValue(response2.getBody(),KakaoProfileDto.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+    public Boolean checkUser(HttpHeaders headers, RestTemplate rt) {
+        KakaoProfileDto kakaoProfile = fetchKakaoProfile(headers, rt);
         boolean emailCheck = userRepository.existsUserByEmail(kakaoProfile.getKakao_account().getEmail());
-        if (emailCheck) {
-            return false;
-        }else {
-            return true;
-        }
+        return !emailCheck;
     }
-    public User returnMember(HttpHeaders headers2, RestTemplate rt2) {
-        HttpEntity<MultiValueMap<String,String>> kakaoProfileRequest =
-                new HttpEntity<>(headers2);
 
-        ResponseEntity<String> response2 = rt2.exchange(
-                kakaoUrlDto.getUserInfo_uri(),
-                HttpMethod.POST,
-                kakaoProfileRequest,
-                String.class
-        );
-        ObjectMapper objectMapper2 = new ObjectMapper();
-        KakaoProfileDto kakaoProfile = null;
-        try {
-            kakaoProfile = objectMapper2.readValue(response2.getBody(),KakaoProfileDto.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-        User user = userRepository.findAllByEmail(kakaoProfile.kakao_account.email).orElseThrow();
-        return user;
+    public User returnMember(HttpHeaders headers2, RestTemplate rt2) {
+
+        KakaoProfileDto kakaoProfile = fetchKakaoProfile(headers2, rt2);
+
+        return userRepository.findAllByEmail(kakaoProfile.kakao_account.email).orElseThrow();
 
     }
 
@@ -173,5 +115,29 @@ public class KakaoService {
         response.setHeader("Authorization",accessToken);
         return ResponseDto.success("로그인에 성공하였습니다.");
     }
+
+    private KakaoProfileDto fetchKakaoProfile(HttpHeaders headers, RestTemplate restTemplate) {
+        HttpEntity<MultiValueMap<String, String>> kakaoProfileRequest = new HttpEntity<>(headers);
+
+        ResponseEntity<String> response = restTemplate.exchange(
+                kakaoUrlDto.getUserInfo_uri(),
+                HttpMethod.POST,
+                kakaoProfileRequest,
+                String.class
+        );
+
+        return parseJson(response.getBody(), KakaoProfileDto.class);
+    }
+
+    private <T> T parseJson(String json, Class<T> valueType) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.readValue(json, valueType);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
 }
 

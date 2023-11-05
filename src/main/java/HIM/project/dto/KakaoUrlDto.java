@@ -18,7 +18,8 @@ public class KakaoUrlDto {
     private String client_secret;
     @Value("${spring.security.oauth2.client.registration.kakao.redirect_uri}")
     private String redirect_uri;
-
+    @Value("${spring.security.oauth2.client.registration.kakao.authorization-grant-type}")
+    private String grant_type;
 
     @Value("${spring.security.oauth2.client.provider.kakao.authorizationUri}")
     private String authorization_uri;
