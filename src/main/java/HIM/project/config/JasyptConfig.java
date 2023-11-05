@@ -1,4 +1,4 @@
-package HIM.project.service;
+package HIM.project.config;
 
 import lombok.RequiredArgsConstructor;
 import org.jasypt.encryption.StringEncryptor;

@@ -1,6 +1,6 @@
 package HIM.project.security;
 
-import HIM.project.common.CustomException;
+import HIM.project.exception.CustomException;
 import HIM.project.common.ErrorCode;
 import HIM.project.dto.RegisterDto;
 import HIM.project.entity.User;
@@ -29,7 +29,7 @@ public class AuthUserResolver implements HandlerMethodArgumentResolver {
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory)  {
         final Long userId = (Long)webRequest.getAttribute(USER_ID,webRequest.SCOPE_SESSION);
         log.info("resolver userId = {}",userId);
         if (userId != null){
