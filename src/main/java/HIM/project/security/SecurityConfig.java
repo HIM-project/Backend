@@ -26,7 +26,7 @@ public class SecurityConfig {
                 .csrf().disable()
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .authorizeRequests(matcherRegistry -> matcherRegistry
-                        .antMatchers("/api/v1/**").permitAll()
+                        .antMatchers("/**").permitAll()
                         .anyRequest().permitAll()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
