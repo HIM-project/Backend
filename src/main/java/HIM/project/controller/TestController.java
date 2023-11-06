@@ -1,7 +1,7 @@
 package HIM.project.controller;
 
 
-import HIM.project.security.AuthUser;
+import HIM.project.security.argumentreoslver.AuthUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

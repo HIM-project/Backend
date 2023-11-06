@@ -1,4 +1,4 @@
-package HIM.project.security;
+package HIM.project.security.argumentreoslver;
 
 import HIM.project.exception.CustomException;
 import HIM.project.common.ErrorCode;
