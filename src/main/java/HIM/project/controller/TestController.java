@@ -1,12 +1,13 @@
 package HIM.project.controller;
 
 
-import HIM.project.dto.RegisterDto;
 import HIM.project.security.AuthUser;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -19,7 +20,16 @@ public class TestController {
         return "테스트 입니다";
     }
     @GetMapping("/test2")
-    public String ArguTest(@AuthUser RegisterDto registerDto){
+    public String ArguTest(@AuthUser Long userId){
+        System.out.println("userId = " + userId);
         return "테스트 입니다";
+    }
+    @GetMapping("/login/oauth/info")
+    public void loginTest(Authentication authentication,
+                          @AuthenticationPrincipal UserDetails userDetails){
+
+        Object principal = authentication.getPrincipal();
+        System.out.println("principal = " + principal);
+
     }
 }

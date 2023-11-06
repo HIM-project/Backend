@@ -48,6 +48,6 @@ public class KakaoController {
             User user = kakaoService.returnMember(headers2, rt2);
             kakaoService.OAuthLoginMember(user,response);
         }
-        return "/";
+        return "index";
     }
 }
