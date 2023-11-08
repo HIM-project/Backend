@@ -1,4 +1,4 @@
-package HIM.project.service.jwt;
+package HIM.project.security.jwt;
 
 
 import HIM.project.exception.CustomException;
@@ -59,8 +59,7 @@ public class JwtTokenProvider {
     public Long getUserId(String jwtToken){
         Claims claims = Jwts.parser()
                 .setSigningKey(secretKey)
-                .parseClaimsJws(jwtToken)
-                .getBody();
+                .parseClaimsJws(jwtToken).getBody();
         Integer userId = (Integer) claims.get("userId");
         return userId.longValue();
     }
@@ -135,7 +134,8 @@ public class JwtTokenProvider {
 
     public ResponseEntity<?> reissuance(String accessToken,HttpServletResponse response) {
 
-        Long userId = getUserId(accessToken);
+        String substring = accessToken.substring(7);
+        Long userId = getUserId(substring);
 
         String refreshToken = redisService.getValues(String.valueOf(userId));
 
@@ -149,6 +149,12 @@ public class JwtTokenProvider {
         response.setHeader(AuthHeader,token);
 
         return ResponseEntity.ok("재발급에 성공하였습니다");
+    }
+
+    public Boolean isBlackList(String accessToken){
+        String BearerToken = "Bearer " + accessToken;
+        String values = redisService.getValues(BearerToken);
+        return values != null;
     }
 }
 
