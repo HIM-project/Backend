@@ -1,4 +1,4 @@
-package HIM.project.service;
+package HIM.project.security;
 
 
 import HIM.project.common.ErrorCode;
@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 public class CustomUserDetailService implements UserDetailsService {
 
+    private static final String USER = "USER";
 
     private final UserRepository userRepository;
     @Override

@@ -1,11 +1,8 @@
-package HIM.project.service;
+package HIM.project.security;
 
 import lombok.*;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;

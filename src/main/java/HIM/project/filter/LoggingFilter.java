@@ -1,6 +1,10 @@
 package HIM.project.filter;
 
+import HIM.project.common.ErrorCode;
+import HIM.project.common.ResponseDto;
+import HIM.project.exception.CustomException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -18,11 +22,8 @@ public class LoggingFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String method = request.getMethod();
         String url = String.valueOf(request.getRequestURL());
-
-        log.info(String.format("%s %s 요청이 들어왔습니다",method,url));
-
-        filterChain.doFilter(request,response);
-
-        log.info(String.format("%s %s 가 상태 %d 로 응답이 나갑니다.",method,url,response.getStatus()));
+            log.info("{} {} 요청이 들어왔습니다", method, url);
+            filterChain.doFilter(request, response);
+        log.info("{}  {} 가 상태 {} 로 응답이 나갑니다.",method,url,response.getStatus());
     }
 }

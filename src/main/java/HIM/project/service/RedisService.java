@@ -1,7 +1,5 @@
 package HIM.project.service;
 
-import HIM.project.common.ErrorCode;
-import HIM.project.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -13,25 +11,27 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class RedisService {
 
-    private final RedisTemplate redisTemplate;
+    private final RedisTemplate<String, String> redisTemplate;
 
-    private Long expirationTime = 604800L;
+    private final Long expirationTime = 604800L;
 
-    public void setValues(String refreshToken, String userId){
+    public void setValues(String refreshToken, String userId) {
         ValueOperations<String, String> value = redisTemplate.opsForValue();
-        value.set(userId,refreshToken,expirationTime, TimeUnit.SECONDS);
+        value.set(userId, refreshToken, expirationTime, TimeUnit.SECONDS);
     }
-    public String getValues(String userId){
+
+    public void setValues(String accessToken, Long expirationTime) {
+        ValueOperations<String, String> value = redisTemplate.opsForValue();
+        value.set(accessToken, accessToken, expirationTime, TimeUnit.SECONDS);
+    }
+
+    public String getValues(String userId) {
         ValueOperations<String, String> values = redisTemplate.opsForValue();
         return values.get(userId);
     }
 
-    public void deleteDictionary(String userId){
-        try {
-            redisTemplate.delete(userId);
-        }catch (Exception e){
-            e.printStackTrace();
-            throw new CustomException(ErrorCode.USER_NOT_FOUND);
-        }
+    public boolean deleteDictionary(String userId) {
+        Boolean delete = redisTemplate.delete(userId);
+        return Boolean.TRUE.equals(delete);
     }
 }
