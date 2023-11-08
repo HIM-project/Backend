@@ -8,7 +8,7 @@ import HIM.project.entity.RefreshToken;
 import HIM.project.entity.User;
 import HIM.project.respository.RefreshTokenRepository;
 import HIM.project.respository.UserRepository;
-import HIM.project.service.jwt.JwtTokenProvider;
+import HIM.project.security.jwt.JwtTokenProvider;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;

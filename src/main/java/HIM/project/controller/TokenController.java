@@ -1,10 +1,9 @@
 package HIM.project.controller;
 
 
-import HIM.project.common.ErrorCode;
 import HIM.project.common.ResponseDto;
 import HIM.project.service.RedisService;
-import HIM.project.service.jwt.JwtTokenProvider;
+import HIM.project.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +21,8 @@ public class TokenController {
     private final RedisService redisService;
 
 
+    final Long ExpireAccessTokenTime =  1000L * 60 * 60;
+
     @GetMapping("/reissuance")
     public ResponseEntity<?> refreshToken(@RequestHeader(name = "Authorization") String accessToken , HttpServletResponse response){
         return jwtTokenProvider.reissuance(accessToken, response);
@@ -29,8 +30,15 @@ public class TokenController {
 
     @DeleteMapping("/logout")
     public ResponseDto<?> deleteRefreshToken(@RequestHeader(name = "Authorization") String accessToken) {
-        Long userId = jwtTokenProvider.getUserId(accessToken);
-        redisService.deleteDictionary(String.valueOf(userId));
-        return ResponseDto.success("성공적으로 제거하였습니다");
+        String substring = accessToken.substring(7);
+        Long userId = jwtTokenProvider.getUserId(substring);
+        String values = redisService.getValues(substring);
+        if (values == null) {
+            redisService.setValues(accessToken,ExpireAccessTokenTime);
+        }
+        if (!redisService.deleteDictionary(String.valueOf(userId))){
+            return ResponseDto.fail("이미 삭제된 토큰입니다");
+        }
+        return ResponseDto.success("성공적으로 로그아웃하였습니다");
     }
 }

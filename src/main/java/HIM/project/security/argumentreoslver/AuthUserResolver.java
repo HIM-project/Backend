@@ -2,7 +2,7 @@ package HIM.project.security.argumentreoslver;
 
 import HIM.project.exception.CustomException;
 import HIM.project.common.ErrorCode;
-import HIM.project.service.jwt.JwtTokenProvider;
+import HIM.project.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
@@ -31,7 +31,6 @@ public class AuthUserResolver implements HandlerMethodArgumentResolver {
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory)  {
         String authorizationHeader = webRequest.getHeader(Auth);
-        log.info("Authorization Header ::: " + authorizationHeader);
         if (authorizationHeader == null) {
             throw new CustomException(ErrorCode.ACCESSTOKEN_NOT_MATCH);
         }
