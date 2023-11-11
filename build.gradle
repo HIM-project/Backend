@@ -35,6 +35,12 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	// swagger
+	implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
+
+	// S3
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
 
 }
 

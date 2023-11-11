@@ -4,6 +4,7 @@ package HIM.project.controller;
 import HIM.project.common.ResponseDto;
 import HIM.project.service.RedisService;
 import HIM.project.security.jwt.JwtTokenProvider;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +24,13 @@ public class TokenController {
 
     final Long ExpireAccessTokenTime =  1000L * 60 * 60;
 
+    @Operation(summary = "AccessToken 재발급")
     @GetMapping("/reissuance")
     public ResponseEntity<?> refreshToken(@RequestHeader(name = "Authorization") String accessToken , HttpServletResponse response){
         return jwtTokenProvider.reissuance(accessToken, response);
     }
 
+    @Operation(summary = "로그아웃 로직")
     @DeleteMapping("/logout")
     public ResponseDto<?> deleteRefreshToken(@RequestHeader(name = "Authorization") String accessToken) {
         String substring = accessToken.substring(7);
