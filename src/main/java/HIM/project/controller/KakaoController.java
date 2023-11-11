@@ -11,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
-
 import javax.servlet.http.HttpServletResponse;
 
 @Controller
@@ -37,7 +36,6 @@ public class KakaoController {
         if (kakaoService.checkUser(headers2,rt2)) {
             User user = kakaoService.createOAuthMember(headers2, rt2);
             kakaoService.OAuthLoginMember(user,response);
-
         }else{
             User user = kakaoService.returnMember(headers2, rt2);
             kakaoService.OAuthLoginMember(user,response);

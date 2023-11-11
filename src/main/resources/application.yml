@@ -39,3 +39,14 @@ spring:
   username: root
   password: 12341234
   url: jdbc:mysql://localhost:3306/HIMProject
+cloud:
+ aws:
+  credentials:
+   access-key: ENC(YjVx61oS78naJGVGCwY7fMPPnIKDzQImsCGmnEnIkUk=)
+   secret-key: ENC(viNb25k74yTgiPmb+cecu0WcpqPvgaBaBNLY9B56LDhPOlSfAEF8vEYmM5GvTmtQOn/JvUGNdLk=)
+  region:
+   static: ap-northeast-2
+  stack:
+   auto: false
+  s3:
+   bucket: code-velop
