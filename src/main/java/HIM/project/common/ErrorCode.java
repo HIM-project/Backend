@@ -26,7 +26,9 @@ public enum ErrorCode {
 
     IMAGE_EXTENSION_BAD_REQUEST(HttpStatus.BAD_REQUEST,"이미지 파일 형식을 변경해주세요"),
 
-    IMAGE_INVALID_FORMAT(HttpStatus.BAD_REQUEST,"해당 이미지 형식은 지원하지 않는 형식입니다");
+    IMAGE_INVALID_FORMAT(HttpStatus.BAD_REQUEST,"해당 이미지 형식은 지원하지 않는 형식입니다"),
+
+    ENUM_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 카테고리를 찾을 수 없습니다")
 
 
     ;
