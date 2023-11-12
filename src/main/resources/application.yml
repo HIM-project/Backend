@@ -50,3 +50,9 @@ cloud:
    auto: false
   s3:
    bucket: code-velop
+logging:
+ level:
+  com:
+   amazonaws:
+    util:
+     EC2MetadataUtils: error

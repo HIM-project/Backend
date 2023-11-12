@@ -1,18 +1,23 @@
 package HIM.project.entity;
 
 
+import HIM.project.common.ErrorCode;
 import HIM.project.entity.type.Category;
 import HIM.project.dto.RegisterDto;
+import HIM.project.exception.CustomException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 @NoArgsConstructor
 @AllArgsConstructor
+@Slf4j
 @Getter
 @Builder
 @Entity
@@ -23,8 +28,12 @@ public class Restaurant {
     @Column(name = "restaurant_id", nullable = false)
     private Long restaurantId;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @Column(name = "category")
-    private Category category;
+    private String category;
 
     @Column(name = "restaurant_name")
     private String restaurantName;
@@ -50,12 +59,14 @@ public class Restaurant {
     @Column(name = "cr_number")
     private String crNumber;
 
-    public static Restaurant of(RegisterDto registerDto) {
-        Category categoryEnum = Category.valueOf(registerDto.getCategory());
+    public static Restaurant of(RegisterDto registerDto,User user) {
+        String categoryEnum = registerDto.getCategory().getValue();
 
         return builder()
+                .user(user)
                 .category(categoryEnum)
                 .restaurantName(registerDto.getRestaurantName())
+                .restaurantExplanation(registerDto.getRestaurantExplanation())
                 .restaurantThumbnail(registerDto.getRestaurantThumbnail())
                 .restaurantLocation(registerDto.getRestaurantLocation())
                 .restaurantNumber(registerDto.getRestaurantNumber())
