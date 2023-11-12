@@ -5,8 +5,10 @@ import HIM.project.common.ErrorCode;
 import HIM.project.common.ResponseDto;
 import HIM.project.dto.RegisterDto;
 import HIM.project.entity.Restaurant;
+import HIM.project.entity.User;
 import HIM.project.exception.CustomException;
 import HIM.project.respository.RestaurantRepository;
+import HIM.project.respository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,14 +22,19 @@ public class RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
 
+    private final UserRepository userRepository;
+
     private final S3Service s3Service;
 
-    public ResponseDto<?> registerRestaurant(RegisterDto registerDto){
-        Boolean isRestaurant = restaurantRepository.findAllByCrNumber(registerDto.getCrNumber());
-        if (isRestaurant){
+    public ResponseDto<?> registerRestaurant(RegisterDto registerDto,Long userId){
+        Restaurant isRestaurant = restaurantRepository.findAllByCrNumber(registerDto.getCrNumber());
+        if (isRestaurant != null){
             throw new CustomException(ErrorCode.RESTAURANT_HAS_BEEN_REGISTERED);
         }
-        Restaurant restaurant = Restaurant.of(registerDto);
+
+        User user = userRepository.findAllByUserId(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        Restaurant restaurant = Restaurant.of(registerDto,user);
         restaurantRepository.save(restaurant);
         return ResponseDto.success("가게 등록에 성공하였습니다.");
     }
