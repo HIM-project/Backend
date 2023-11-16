@@ -11,7 +11,6 @@ import HIM.project.respository.RestaurantRepository;
 import HIM.project.respository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -27,10 +26,8 @@ public class RestaurantService {
     private final S3Service s3Service;
 
     public ResponseDto<?> registerRestaurant(RegisterDto registerDto,Long userId){
-        Restaurant isRestaurant = restaurantRepository.findAllByCrNumber(registerDto.getCrNumber());
-        if (isRestaurant != null){
-            throw new CustomException(ErrorCode.RESTAURANT_HAS_BEEN_REGISTERED);
-        }
+
+        restaurantRepository.findAllByCrNumber(registerDto.getCrNumber()).orElseThrow(() -> new CustomException(ErrorCode.RESTAURANT_HAS_BEEN_REGISTERED));
 
         User user = userRepository.findAllByUserId(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 

@@ -32,10 +32,7 @@ public class RegisterDto {
     @JsonProperty("crNumber")
     private String crNumber;
 
-    @JsonProperty("openingHours")
-    private LocalDateTime openingHours;
-
-    @JsonProperty("openingHours")
+    @JsonProperty("restaurantExplanation")
     private String restaurantExplanation;
 
 }
