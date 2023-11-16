@@ -53,9 +53,6 @@ public class Restaurant {
     @Column(name = "restaurant_open_count")
     private Long restaurantOpenCount;
 
-    @Column(name = "opening_hours")
-    private LocalDateTime openingHours;
-
     @Column(name = "cr_number")
     private String crNumber;
 
@@ -71,7 +68,6 @@ public class Restaurant {
                 .restaurantLocation(registerDto.getRestaurantLocation())
                 .restaurantNumber(registerDto.getRestaurantNumber())
                 .crNumber(registerDto.getCrNumber())
-                .openingHours(registerDto.getOpeningHours())
                 .build();
     }
 }
