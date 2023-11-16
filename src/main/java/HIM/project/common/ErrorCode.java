@@ -24,6 +24,9 @@ public enum ErrorCode {
 
     RESTAURANT_HAS_BEEN_REGISTERED(HttpStatus.BAD_REQUEST,"해당 가게는 이미 등혹되어있습니다"),
 
+    RESTAURANT_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 가게를 찾을 수 없습니다."),
+
+
     IMAGE_EXTENSION_BAD_REQUEST(HttpStatus.BAD_REQUEST,"이미지 파일 형식을 변경해주세요"),
 
     IMAGE_INVALID_FORMAT(HttpStatus.BAD_REQUEST,"해당 이미지 형식은 지원하지 않는 형식입니다"),
