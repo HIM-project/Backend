@@ -2,6 +2,7 @@ package HIM.project.controller;
 
 
 import HIM.project.common.ResponseDto;
+import HIM.project.dto.OpeningDtoList;
 import HIM.project.dto.RegisterDto;
 import HIM.project.security.argumentreoslver.AuthUser;
 import HIM.project.service.RestaurantService;
@@ -29,5 +30,16 @@ public class RestaurantController {
     @Operation(summary = "가게 썸네일 등록")
     public ResponseDto<?> registerRestaurant(@RequestParam("file") MultipartFile file){
         return  restaurantService.registerThumbnail(file);
+    }
+
+    @GetMapping("my/restaurant")
+    @Operation(summary = "내 가게 확인")
+    public ResponseDto<?> myRestaurant(@AuthUser Long userId){
+        return restaurantService.getMyRestaurant(userId);
+    }
+    @PatchMapping("my/restaurant/opening")
+    @Operation(summary = "가게 영업 시간 관리")
+    public ResponseDto<?> myRestaurantOpening(@RequestBody OpeningDtoList openingDtoList){
+        return restaurantService.postMyRestaurantOpening(openingDtoList);
     }
 }

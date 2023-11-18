@@ -22,7 +22,7 @@ public enum ErrorCode {
 
     USER_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 유저를 찾을 수 없습니다"),
 
-    RESTAURANT_HAS_BEEN_REGISTERED(HttpStatus.BAD_REQUEST,"해당 가게는 이미 등혹되어있습니다"),
+    RESTAURANT_HAS_BEEN_REGISTERED(HttpStatus.BAD_REQUEST,"해당 가게는 이미 등록되어있습니다"),
 
     RESTAURANT_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 가게를 찾을 수 없습니다."),
 
