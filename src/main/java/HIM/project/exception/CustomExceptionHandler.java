@@ -14,17 +14,17 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice   //@ExceptionHandler,@ModelAttribute, @InitBinder 가 적용된 메서드에 AOP 적용
 public class CustomExceptionHandler {
 
-    @ExceptionHandler(SignatureException.class)
+    @ExceptionHandler(value = {SignatureException.class})
     public ResponseDto<?> handleSignatureException() {
         return ResponseDto.fail("변조된 토큰입니다");
     }
 
-    @ExceptionHandler(MalformedJwtException.class)
+    @ExceptionHandler(value = {MalformedJwtException.class})
     public ResponseDto<?> handleMalformedJwtException() {
         return ResponseDto.fail("올바르지 않는 토큰입니다");
     }
 
-    @ExceptionHandler(ExpiredJwtException.class)
+    @ExceptionHandler(value = {ExpiredJwtException.class})
     public ResponseDto<?> handleExpiredJwtException() {
         return ResponseDto.fail("만료된 토큰입니다 재발급 받아주세요");    }
 

@@ -2,6 +2,7 @@ package HIM.project.entity;
 
 
 import HIM.project.dto.MenuDto;
+import HIM.project.dto.PatchMenuDto;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.CreationTimestamp;
@@ -13,6 +14,7 @@ import java.time.Instant;
 @AllArgsConstructor
 @Slf4j
 @Getter
+@Setter
 @Builder
 @Entity
 @Table(name = "menu")
@@ -43,7 +45,7 @@ public class Menu {
     @Column(name = "created_at", nullable = false, updatable = false)
     protected Instant createdAt;
 
-    public static Menu of(MenuDto menuDto, Restaurant restaurant, String foodThumbnail)  {
+    public static Menu form(MenuDto menuDto, Restaurant restaurant, String foodThumbnail)  {
 
         return Menu.builder()
                 .restaurant(restaurant)
@@ -54,4 +56,9 @@ public class Menu {
                 .build();
     }
 
+    public void applyPatch(PatchMenuDto patchMenuDto, String newThumbnailUrl) {
+        this.foodName = patchMenuDto.getFoodName();
+        this.price = patchMenuDto.getPrice();
+        this.foodThumbnail = newThumbnailUrl;
+    }
 }

@@ -31,8 +31,11 @@ public enum ErrorCode {
 
     IMAGE_INVALID_FORMAT(HttpStatus.BAD_REQUEST,"해당 이미지 형식은 지원하지 않는 형식입니다"),
 
-    ENUM_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 카테고리를 찾을 수 없습니다")
+    ENUM_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 카테고리를 찾을 수 없습니다"),
 
+
+    MENU_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 메뉴를 찾을 수 없습니다"),
+    MENU_PATCH_FAIL(HttpStatus.INTERNAL_SERVER_ERROR,"해당 메뉴를 수정하는데 실패하였습니다")
 
     ;
     private final HttpStatus httpStatus;
