@@ -2,8 +2,9 @@ package HIM.project.controller;
 
 
 import HIM.project.common.ResponseDto;
-import HIM.project.dto.OpeningDtoList;
-import HIM.project.dto.RegisterDto;
+import HIM.project.dto.kakao.OpeningDtoList;
+import HIM.project.dto.request.PatchRestaurantDto;
+import HIM.project.dto.request.RegisterDto;
 import HIM.project.security.argumentreoslver.AuthUser;
 import HIM.project.service.RestaurantService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,6 +38,12 @@ public class RestaurantController {
     public ResponseDto<?> myRestaurant(@AuthUser Long userId){
         return restaurantService.getMyRestaurant(userId);
     }
+    @PatchMapping("my/patch/restaurant")
+    @Operation(summary = "가게 소개 수정")
+    public ResponseDto<?> patchMyRestaurant(@RequestPart(name = "dto") PatchRestaurantDto restaurantDto, @RequestPart(name = "file") MultipartFile file){
+        return restaurantService.patchMyRestaurant(restaurantDto,file);
+    }
+
     @PatchMapping("my/restaurant/opening")
     @Operation(summary = "가게 영업 시간 관리")
     public ResponseDto<?> myRestaurantOpening(@RequestBody OpeningDtoList openingDtoList){

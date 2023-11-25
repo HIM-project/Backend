@@ -1,10 +1,8 @@
 package HIM.project.entity;
 
 
-import HIM.project.common.ErrorCode;
-import HIM.project.entity.type.Category;
-import HIM.project.dto.RegisterDto;
-import HIM.project.exception.CustomException;
+import HIM.project.dto.request.PatchRestaurantDto;
+import HIM.project.dto.request.RegisterDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,8 +10,6 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.Arrays;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -56,7 +52,7 @@ public class Restaurant {
     @Column(name = "cr_number")
     private String crNumber;
 
-    public static Restaurant of(RegisterDto registerDto,User user) {
+    public static Restaurant form(RegisterDto registerDto,User user) {
         String categoryEnum = registerDto.getCategory().getValue();
 
         return builder()
@@ -70,4 +66,12 @@ public class Restaurant {
                 .crNumber(registerDto.getCrNumber())
                 .build();
     }
+
+
+
+    public void applyPatch(PatchRestaurantDto restaurantDto, String thumbnail){
+        this.restaurantExplanation = restaurantDto.getRestaurantExplanation();
+        this.restaurantThumbnail = thumbnail;
+    }
+
 }

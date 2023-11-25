@@ -1,4 +1,4 @@
-package HIM.project.dto;
+package HIM.project.dto.response;
 
 
 import HIM.project.entity.Restaurant;

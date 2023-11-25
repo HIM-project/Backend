@@ -3,9 +3,10 @@ package HIM.project.service;
 
 import HIM.project.common.ErrorCode;
 import HIM.project.common.ResponseDto;
-import HIM.project.dto.MyRestaurant;
-import HIM.project.dto.OpeningDtoList;
-import HIM.project.dto.RegisterDto;
+import HIM.project.dto.request.PatchRestaurantDto;
+import HIM.project.dto.response.MyRestaurant;
+import HIM.project.dto.kakao.OpeningDtoList;
+import HIM.project.dto.request.RegisterDto;
 import HIM.project.entity.OpeningTime;
 import HIM.project.entity.Restaurant;
 import HIM.project.entity.User;
@@ -20,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -47,7 +47,7 @@ public class RestaurantService {
 
         User user = userRepository.findAllByUserId(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        Restaurant restaurant = Restaurant.of(registerDto,user);
+        Restaurant restaurant = Restaurant.form(registerDto,user);
         restaurantRepository.save(restaurant);
 
         initializeOpening(restaurant);
@@ -63,13 +63,8 @@ public class RestaurantService {
     }
 
     public ResponseDto<?> registerThumbnail(MultipartFile file) {
-        try {
             String uploadImageFileURL = s3Service.uploadImageFile(file);
             return ResponseDto.success(uploadImageFileURL);
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-        return ResponseDto.fail("파일 업로드에 실패하였습니다");
     }
 
     public ResponseDto<?> getMyRestaurant(Long userId) {
@@ -99,4 +94,12 @@ public class RestaurantService {
         });
         return ResponseDto.success(openingDtoList);
         }
+
+    public ResponseDto<?> patchMyRestaurant(PatchRestaurantDto restaurantDto, MultipartFile file) {
+        Restaurant restaurant = restaurantRepository.findAllByRestaurantId(restaurantDto.getRestaurantId()).orElseThrow(() -> new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
+        s3Service.deleteFile(restaurant.getRestaurantThumbnail());
+        String uploadImageFileURL = s3Service.uploadImageFile(file);
+        restaurant.applyPatch(restaurantDto,uploadImageFileURL);
+        return ResponseDto.success("성공적으로 저장하였습니다");
     }
+}

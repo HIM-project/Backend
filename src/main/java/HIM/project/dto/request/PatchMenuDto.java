@@ -1,4 +1,4 @@
-package HIM.project.dto;
+package HIM.project.dto.request;
 
 
 import lombok.AllArgsConstructor;
@@ -6,11 +6,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Builder
-public class MenuDto {
+@NoArgsConstructor
+@AllArgsConstructor
+public class PatchMenuDto {
+    private Long menuId;
     private String foodName;
-    private Integer foodPrice;
+    private Integer price;
 }
