@@ -52,7 +52,7 @@ public class S3Service {
         }
     }
 
-    public String uploadImageFile(MultipartFile file) throws IOException {
+    public String uploadImageFile(MultipartFile file) {
         if (!validateImageFile(file)) throw new CustomException(ErrorCode.IMAGE_INVALID_FORMAT);
         return upload(file);
     }
@@ -78,14 +78,18 @@ public class S3Service {
         return ALLOWED_IMAGE_EXTENSIONS.contains(extension);
     }
 
-    private String upload(MultipartFile file) throws IOException {
+    private String upload(MultipartFile file)  {
         ObjectMetadata meta = new ObjectMetadata();
         meta.setContentType(file.getContentType());
         meta.setContentLength(file.getSize());
 
         String fileName = file.getOriginalFilename();
 
-        amazonS3Client.putObject(bucket, fileName, file.getInputStream(), meta);
+        try {
+            amazonS3Client.putObject(bucket, fileName, file.getInputStream(), meta);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         return amazonS3Client.getUrl(bucket, fileName).toString();
     }

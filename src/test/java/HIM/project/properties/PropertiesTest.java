@@ -1,6 +1,6 @@
 package HIM.project.properties;
 
-import HIM.project.dto.KakaoUrlDto;
+import HIM.project.dto.kakao.KakaoUrlDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 

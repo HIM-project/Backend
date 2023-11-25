@@ -1,8 +1,8 @@
 package HIM.project.entity;
 
 
-import HIM.project.dto.MenuDto;
-import HIM.project.dto.PatchMenuDto;
+import HIM.project.dto.request.MenuDto;
+import HIM.project.dto.request.PatchMenuDto;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.CreationTimestamp;

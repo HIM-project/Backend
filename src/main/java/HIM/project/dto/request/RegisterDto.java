@@ -1,4 +1,4 @@
-package HIM.project.dto;
+package HIM.project.dto.request;
 
 import HIM.project.entity.type.Category;
 import com.fasterxml.jackson.annotation.JsonProperty;

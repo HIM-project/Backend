@@ -1,4 +1,4 @@
-package HIM.project.dto;
+package HIM.project.dto.kakao;
 
 import HIM.project.entity.OpeningTime;
 import HIM.project.entity.Restaurant;

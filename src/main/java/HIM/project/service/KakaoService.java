@@ -1,9 +1,9 @@
 package HIM.project.service;
 
 import HIM.project.common.ResponseDto;
-import HIM.project.dto.KakaoProfileDto;
-import HIM.project.dto.KakaoUrlDto;
-import HIM.project.dto.OAuthToken;
+import HIM.project.dto.kakao.KakaoProfileDto;
+import HIM.project.dto.kakao.KakaoUrlDto;
+import HIM.project.dto.kakao.OAuthToken;
 import HIM.project.entity.RefreshToken;
 import HIM.project.entity.User;
 import HIM.project.respository.RefreshTokenRepository;

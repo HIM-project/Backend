@@ -1,7 +1,7 @@
 package HIM.project.controller;
 
 
-import HIM.project.dto.OAuthToken;
+import HIM.project.dto.kakao.OAuthToken;
 import HIM.project.entity.User;
 import HIM.project.service.KakaoService;
 import lombok.RequiredArgsConstructor;
