@@ -33,7 +33,7 @@ spring:
   hibernate:
     ddl-auto: update
   database: mysql
-  show-sql: false
+  show-sql: true
  datasource:
   driver-class-name: com.mysql.cj.jdbc.Driver
   username: root
@@ -56,3 +56,4 @@ logging:
    amazonaws:
     util:
      EC2MetadataUtils: error
+
