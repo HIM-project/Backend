@@ -14,6 +14,8 @@ import HIM.project.entity.type.Day;
 import HIM.project.exception.CustomException;
 import HIM.project.respository.OpeningTimeRepository;
 import HIM.project.respository.RestaurantRepository;
+//import HIM.project.respository.RestaurantRepositoryImpl;
+import HIM.project.respository.RestaurantRepositoryImpl;
 import HIM.project.respository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +35,8 @@ public class RestaurantService {
     private final OpeningTimeRepository openingTimeRepository;
 
     private final RestaurantRepository restaurantRepository;
+
+    private final RestaurantRepositoryImpl restaurantRepositoryImpl;
 
     private final UserRepository userRepository;
 
@@ -68,13 +72,8 @@ public class RestaurantService {
     }
 
     public ResponseDto<?> getMyRestaurant(Long userId) {
-        List<Restaurant> restaurant = restaurantRepository.findAllByUserUserId(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        List<MyRestaurant> responseRestaurant = new ArrayList<>();
-        for (Restaurant restaurants : restaurant) {
-            MyRestaurant from = MyRestaurant.from(restaurants);
-            responseRestaurant.add(from);
-        }
-        return ResponseDto.success(responseRestaurant);
+        List<MyRestaurant> restaurant = restaurantRepositoryImpl.findAllByUserUserId(userId);
+        return ResponseDto.success(restaurant);
     }
 
     public ResponseDto<?> postMyRestaurantOpening(OpeningDtoList openingDtoList) {
