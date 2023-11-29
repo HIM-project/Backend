@@ -29,7 +29,7 @@ public class RestaurantController {
 
     @PostMapping("registration/thumbnail")
     @Operation(summary = "가게 썸네일 등록")
-    public ResponseDto<?> registerRestaurant(@RequestParam("file") MultipartFile file){
+    public ResponseDto<?> registerRestaurant(@RequestParam(name = "file") MultipartFile file){
         return  restaurantService.registerThumbnail(file);
     }
 
@@ -40,7 +40,7 @@ public class RestaurantController {
     }
     @PatchMapping("my/patch/restaurant")
     @Operation(summary = "가게 소개 수정")
-    public ResponseDto<?> patchMyRestaurant(@RequestPart(name = "dto") PatchRestaurantDto restaurantDto, @RequestPart(name = "file") MultipartFile file){
+    public ResponseDto<?> patchMyRestaurant(@RequestPart(name = "dto") PatchRestaurantDto restaurantDto, @RequestParam(name = "file") MultipartFile file){
         return restaurantService.patchMyRestaurant(restaurantDto,file);
     }
 

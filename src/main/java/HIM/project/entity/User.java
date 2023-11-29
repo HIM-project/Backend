@@ -1,6 +1,7 @@
 package HIM.project.entity;
 
 
+import HIM.project.entity.type.Day;
 import lombok.*;
 
 import javax.persistence.*;
@@ -26,6 +27,20 @@ public class User {
     @Column(name = "user_thumbnail")
     private String userThumbnail;
 
-
-
+    public static User of(User user, String nickName) {
+        return User.builder()
+                .userId(user.getUserId())
+                .email(user.getEmail())
+                .userThumbnail(user.getUserThumbnail())
+                .userName(nickName)
+                .build();
+    }
+    public static User MyThumbnailOf(User user, String Thumbnail) {
+        return User.builder()
+                .userId(user.getUserId())
+                .email(user.getEmail())
+                .userThumbnail(Thumbnail)
+                .userName(user.getUserName())
+                .build();
+    }
 }
