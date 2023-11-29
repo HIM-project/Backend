@@ -54,6 +54,6 @@ public class MenuService {
             Menu menu = menuRepository.findAllByMenuIdAndIsDeletedIsFalse(patchMenuDto.getMenuId()).orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
             s3Service.deleteFile(menu.getFoodThumbnail());
             menu.applyPatch(patchMenuDto,menuThumbnail);
-        return ResponseDto.success(menu);
+        return ResponseDto.success("성공하였습니다");
     }
 }
