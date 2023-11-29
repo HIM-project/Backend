@@ -37,7 +37,7 @@ public class RestaurantRepositoryImpl implements RestaurantRepositoryCustom{
         QRestaurant restaurant = QRestaurant.restaurant;
         QUser user = QUser.user;
 
-        return Optional.ofNullable(jpaQueryFactory.selectDistinct(new QMyRestaurant(
+        return Optional.ofNullable(jpaQueryFactory.select(new QMyRestaurant(
                         restaurant.restaurantId,
                         restaurant.restaurantThumbnail,
                         restaurant.restaurantName
