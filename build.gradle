@@ -45,6 +45,10 @@ dependencies {
 	implementation 'com.querydsl:querydsl-jpa'
 	annotationProcessor "com.querydsl:querydsl-apt:5.0.0"
 
+//	json
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.2'
+	implementation 'org.json:json:20220320'
+
 }
 
 tasks.named('test') {
