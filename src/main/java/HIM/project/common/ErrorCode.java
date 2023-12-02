@@ -37,6 +37,8 @@ public enum ErrorCode {
     MENU_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 메뉴를 찾을 수 없습니다"),
     MENU_PATCH_FAIL(HttpStatus.INTERNAL_SERVER_ERROR,"해당 메뉴를 수정하는데 실패하였습니다")
 
+    ,
+    NAVER_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 영수증 객체를 찾을 수 없습니다")
     ;
     private final HttpStatus httpStatus;
     private final String errorMsg;
