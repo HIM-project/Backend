@@ -3,10 +3,11 @@ package HIM.project.service;
 
 import HIM.project.common.ErrorCode;
 import HIM.project.common.ResponseDto;
-import HIM.project.dto.request.PatchRestaurantDto;
-import HIM.project.dto.response.MyRestaurant;
 import HIM.project.dto.kakao.OpeningDtoList;
+import HIM.project.dto.request.PatchRestaurantDto;
 import HIM.project.dto.request.RegisterDto;
+import HIM.project.dto.response.MyRestaurant;
+import HIM.project.dto.response.RestaurantInfo;
 import HIM.project.entity.OpeningTime;
 import HIM.project.entity.Restaurant;
 import HIM.project.entity.User;
@@ -14,7 +15,6 @@ import HIM.project.entity.type.Day;
 import HIM.project.exception.CustomException;
 import HIM.project.respository.OpeningTimeRepository;
 import HIM.project.respository.RestaurantRepository;
-//import HIM.project.respository.RestaurantRepositoryImpl;
 import HIM.project.respository.RestaurantRepositoryImpl;
 import HIM.project.respository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -79,7 +78,7 @@ public class RestaurantService {
     public ResponseDto<?> postMyRestaurantOpening(OpeningDtoList openingDtoList) {
         List<OpeningDtoList.OpeningDto> openingDtoListItems = openingDtoList.getOpeningDtoList();
 
-        Restaurant restaurant = restaurantRepository.findAllByRestaurantId(openingDtoListItems.get(0).getRestaurantId()).orElseThrow(() -> new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
+        Restaurant restaurant = restaurantRepositoryImpl.findAllByRestaurantId(openingDtoListItems.get(0).getRestaurantId());
 
         List<OpeningTime> openingTimes = openingTimeRepository.findAllByRestaurant(restaurant);
 
@@ -95,10 +94,15 @@ public class RestaurantService {
         }
 
     public ResponseDto<?> patchMyRestaurant(PatchRestaurantDto restaurantDto, MultipartFile file) {
-        Restaurant restaurant = restaurantRepository.findAllByRestaurantId(restaurantDto.getRestaurantId()).orElseThrow(() -> new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
+        Restaurant restaurant = restaurantRepository.findByRestaurantId(restaurantDto.getRestaurantId()).orElseThrow(() -> new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
         s3Service.deleteFile(restaurant.getRestaurantThumbnail());
         String uploadImageFileURL = s3Service.uploadImageFile(file);
         restaurant.applyPatch(restaurantDto,uploadImageFileURL);
         return ResponseDto.success("성공적으로 저장하였습니다");
+    }
+
+    public ResponseDto<?> getRestaurantInfo(Long restaurantId) {
+        RestaurantInfo restaurantInfo = restaurantRepositoryImpl.findByRestaurantId(restaurantId);
+        return ResponseDto.success(restaurantInfo);
     }
 }

@@ -3,27 +3,34 @@ package HIM.project.respository;
 import HIM.project.common.ErrorCode;
 import HIM.project.dto.response.MyRestaurant;
 import HIM.project.dto.response.QMyRestaurant;
-import HIM.project.entity.QRestaurant;
-import HIM.project.entity.QUser;
-import HIM.project.entity.Restaurant;
+import HIM.project.dto.response.QRestaurantInfo;
+import HIM.project.dto.response.RestaurantInfo;
+import HIM.project.entity.*;
+import HIM.project.entity.type.Day;
 import HIM.project.exception.CustomException;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Time;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
 @Slf4j
-public class RestaurantRepositoryImpl implements RestaurantRepositoryCustom{
+public class RestaurantRepositoryImpl implements RestaurantRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
 
+
     @Override
-    public List<Restaurant> findAllByRestaurantId(Long restaurantId) {
+    public List<Restaurant> findAllListByRestaurantId(Long restaurantId) {
         QRestaurant restaurant = QRestaurant.restaurant;
 
         return jpaQueryFactory
@@ -46,5 +53,45 @@ public class RestaurantRepositoryImpl implements RestaurantRepositoryCustom{
                 .join(restaurant.user, user)
                 .where(user.userId.eq(userId))
                 .fetch()).orElseThrow(() -> new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
+    }
+
+    @Override
+    public RestaurantInfo findByRestaurantId(Long restaurantId) {
+        QRestaurant restaurant = QRestaurant.restaurant;
+        QReview review = QReview.review;
+        QOpeningTime openingTime = QOpeningTime.openingTime;
+
+        String koreanDay = getKoreanDay();
+
+
+        return Optional.ofNullable(jpaQueryFactory.select(new QRestaurantInfo(
+                        restaurant.restaurantName,
+                        Expressions.numberTemplate(Double.class, "ROUND(COALESCE({0}, 0),1)", review.starPoint.avg()).coalesce(0.0),
+                        restaurant.restaurantThumbnail.coalesce(""),
+                        review.reviewThumbnail.max().coalesce(""),
+                        openingTime.closeTime.max().coalesce(Time.valueOf(LocalTime.now())),
+                        restaurant.category.coalesce("")
+                )).from(restaurant)
+                .leftJoin(review).on(restaurant.restaurantId.eq(review.restaurant.restaurantId))
+                .leftJoin(openingTime).on(restaurant.restaurantId.eq(openingTime.restaurant.restaurantId)
+                        .and(openingTime.day.eq(koreanDay)))
+                .where(restaurant.restaurantId.eq(restaurantId))
+                .orderBy(review.reviewId.desc())
+                .fetchOne()).orElseThrow(() -> new CustomException(ErrorCode.RESTAURANT_INFO_NOT_FOUND));
+    }
+
+    private static String getKoreanDay() {
+        LocalDateTime now = LocalDateTime.now();
+        DayOfWeek dayOfWeek = now.getDayOfWeek();
+        Day day = Day.valueOf(String.valueOf(dayOfWeek));
+        return day.getValue();
+    }
+
+    @Override
+    public Restaurant findAllByRestaurantId(Long restaurantId) {
+        QRestaurant restaurant = QRestaurant.restaurant;
+        return Optional.ofNullable(jpaQueryFactory.selectFrom(restaurant)
+                .where(restaurant.restaurantId.eq(restaurantId))
+                .fetchOne()).orElseThrow(() -> new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
     }
 }
