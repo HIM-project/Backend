@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import java.util.List;
 
@@ -358,7 +357,6 @@ public class NaverOcrDto {
     @AllArgsConstructor
     @Getter
     @JsonIgnoreProperties(ignoreUnknown = true)
-
     public static class FloatObject {
         @JsonProperty("text")
         private String text;
