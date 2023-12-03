@@ -49,4 +49,10 @@ public class RestaurantController {
     public ResponseDto<?> myRestaurantOpening(@RequestBody OpeningDtoList openingDtoList){
         return restaurantService.postMyRestaurantOpening(openingDtoList);
     }
+
+    @GetMapping("/restaurant")
+    @Operation(summary = "가게 요약 정보")
+    public ResponseDto<?> getRestaurantInfo(@RequestParam Long restaurantId){
+        return restaurantService.getRestaurantInfo(restaurantId);
+    }
 }

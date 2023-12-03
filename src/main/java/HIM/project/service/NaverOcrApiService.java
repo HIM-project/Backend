@@ -4,15 +4,10 @@ import HIM.project.common.ErrorCode;
 import HIM.project.common.ResponseDto;
 import HIM.project.dto.response.NaverOcrDto;
 import HIM.project.exception.CustomException;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONException;
@@ -22,11 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Objects;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -38,44 +32,72 @@ public class NaverOcrApiService {
     @Value("${naver.service.secretKey}")
     private String naverSecretKey;
 
-    @SneakyThrows
     public ResponseDto<?> requestImage(MultipartFile file) {
 
             Result result = getResult(file);
 
+        try {
             result.con.connect();
+        } catch (IOException e) {
+            log.info("Error",e);
+            throw new CustomException(ErrorCode.NAVER_SERVER_ERROR);
+        }
 
-            DataOutputStream wr = new DataOutputStream(result.con.getOutputStream());
-            writeMultiPart(wr, result.postParams, file, result.boundary);
+        DataOutputStream wr = null;
+        try {
+            wr = new DataOutputStream(result.con.getOutputStream());
+        writeMultiPart(wr, result.postParams, file, result.boundary);
 
             int responseCode = result.con.getResponseCode();
 
             ObjectMapper objectMapper = new ObjectMapper();
             NaverOcrDto response = objectMapper.readValue(readResponseBody(result.con, responseCode), NaverOcrDto.class);
-            System.out.println("response = " + response);
 
 
             return ResponseDto.success(response.getImages().get(0).getReceipt().getResult().getStoreInfo().getBizNum().getText());
+        } catch (IOException e) {
+            log.info("Error",e);
+            throw new CustomException(ErrorCode.NAVER_SERVER_ERROR);
+        }
         }
 
 
-    private Result getResult(MultipartFile file) throws IOException, JSONException {
-        URL url = new URL(apiUrl);
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+    private Result getResult(MultipartFile file) {
+        URL url = null;
+        try {
+            url = new URL(apiUrl);
+        } catch (MalformedURLException e) {
+            log.info("Error",e);
+            throw new CustomException(ErrorCode.NAVER_SERVER_ERROR);
+        }
+        HttpURLConnection con = null;
+        try {
+            con = (HttpURLConnection) url.openConnection();
+        } catch (IOException e) {
+            log.info("Error",e);
+            throw new CustomException(ErrorCode.NAVER_SERVER_ERROR);
+        }
         con.setUseCaches(false);
         con.setDoInput(true);
         con.setDoOutput(true);
-        con.setReadTimeout(30000);
-        con.setRequestMethod("POST");
+        con.setRequestProperty("Connection", "keep-alive");
+        con.setReadTimeout(5000);
+        try {
+            con.setRequestMethod("POST");
+        } catch (ProtocolException e) {
+            log.info("Error",e);
+            throw new CustomException(ErrorCode.NAVER_SERVER_ERROR);
+        }
 
         String boundary = "----" + UUID.randomUUID().toString().replaceAll("-", "");
         con.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
         con.setRequestProperty("X-OCR-SECRET", naverSecretKey);
 
         JSONObject json = new JSONObject();
-        json.put("version", "V2");
-        json.put("requestId", UUID.randomUUID().toString());
-        json.put("timestamp", System.currentTimeMillis());
+        try {
+            json.put("version", "V2");
+            json.put("requestId", UUID.randomUUID().toString());
+            json.put("timestamp", System.currentTimeMillis());
 
         JSONObject image = new JSONObject();
         image.put("format", file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1));
@@ -84,9 +106,11 @@ public class NaverOcrApiService {
         JSONArray images = new JSONArray();
         images.put(image);
         json.put("images", images);
+        }   catch (JSONException e) {
+            throw new CustomException(ErrorCode.NAVER_SERVER_ERROR);
+        }
         String postParams = json.toString();
-        Result result = new Result(con, boundary, postParams);
-        return result;
+        return new Result(con, boundary, postParams);
     }
 
     @AllArgsConstructor
@@ -96,12 +120,14 @@ public class NaverOcrApiService {
         public final String postParams;
     }
 
-    private void writeMultiPart(OutputStream out, String jsonMessage, MultipartFile file, String boundary) throws IOException {
+    private void writeMultiPart(OutputStream out, String jsonMessage, MultipartFile file, String boundary)  {
         String sb = "--" + boundary + "\r\n" +
                 "Content-Disposition: form-data; name=\"message\"\r\n\r\n" +
                 jsonMessage + "\r\n";
 
-        out.write(sb.getBytes(StandardCharsets.UTF_8));
+        try {
+            out.write(sb.getBytes(StandardCharsets.UTF_8));
+
         out.flush();
 
         if (file != null && file.getSize() > 0) {
@@ -126,9 +152,13 @@ public class NaverOcrApiService {
             out.write(("--" + boundary + "--\r\n").getBytes(StandardCharsets.UTF_8));
         }
         out.flush();
+        } catch (IOException e) {
+            log.info("Error",e);
+            throw new CustomException(ErrorCode.NAVER_SERVER_ERROR);
+        }
     }
 
-    private String readResponseBody(HttpURLConnection connection, int responseCode) throws IOException {
+    private String readResponseBody(HttpURLConnection connection, int responseCode) {
         try (BufferedReader br = new BufferedReader(new InputStreamReader((responseCode == 200) ? connection.getInputStream() : connection.getErrorStream()))) {
             StringBuilder response = new StringBuilder();
             String inputLine;
@@ -136,6 +166,9 @@ public class NaverOcrApiService {
                 response.append(inputLine);
             }
             return response.toString();
+        } catch (IOException e) {
+            log.info("Error",e);
+            throw new CustomException(ErrorCode.NAVER_SERVER_ERROR);
         }
     }
 }
