@@ -85,7 +85,7 @@ public class RestaurantService {
         openingDtoListItems.forEach(dto -> {
             openingTimes.forEach(openingTime -> {
                 if (Objects.equals(dto.getDay().getValue(), openingTime.getDay())) {
-                    openingTime.setOpeingTime(dto.getOpen());
+                    openingTime.setOpenTime(dto.getOpen());
                     openingTime.setCloseTime(dto.getClose());
                 }
             });

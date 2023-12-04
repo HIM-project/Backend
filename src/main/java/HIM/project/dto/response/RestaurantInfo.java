@@ -4,7 +4,8 @@ import com.querydsl.core.annotations.QueryProjection;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.sql.Time;
+import java.time.LocalTime;
+
 @Getter
 @Builder
 public class RestaurantInfo {
@@ -16,17 +17,19 @@ public class RestaurantInfo {
 
     private String reviewThumbnail;
 
-    private Time restaurantTime;
+    private LocalTime restaurantTime;
 
     private String category;
 
+    private Boolean servicing;
     @QueryProjection
-    public RestaurantInfo(String restaurantName, Double starPoint, String restaurantThumbnail, String reviewThumbnail, Time restaurantTime, String category) {
+    public RestaurantInfo(String restaurantName, Double starPoint, String restaurantThumbnail, String reviewThumbnail, LocalTime restaurantTime, String category, Boolean servicing) {
         this.restaurantName = restaurantName;
         this.starPoint = starPoint;
         this.restaurantThumbnail = restaurantThumbnail;
         this.reviewThumbnail = reviewThumbnail;
         this.restaurantTime = restaurantTime;
         this.category = category;
+        this.servicing = servicing;
     }
 }

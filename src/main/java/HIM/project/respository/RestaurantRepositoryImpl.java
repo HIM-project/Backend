@@ -8,16 +8,18 @@ import HIM.project.dto.response.RestaurantInfo;
 import HIM.project.entity.*;
 import HIM.project.entity.type.Day;
 import HIM.project.exception.CustomException;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Time;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
@@ -66,22 +68,37 @@ public class RestaurantRepositoryImpl implements RestaurantRepositoryCustom {
 
         return Optional.ofNullable(jpaQueryFactory.select(new QRestaurantInfo(
                         restaurant.restaurantName,
-                        Expressions.numberTemplate(Double.class, "ROUND(COALESCE({0}, 0),1)", review.starPoint.avg()).coalesce(0.0),
+                        avgReviewStar(review),
                         restaurant.restaurantThumbnail.coalesce(""),
                         review.reviewThumbnail.max().coalesce(""),
-                        openingTime.closeTime.max().coalesce(Time.valueOf(LocalTime.now())),
-                        restaurant.category.coalesce("")
+                        openingTime.closeTime.max(),
+                        restaurant.category.coalesce(""),
+                        isServicing(openingTime,getKoreanDay(),LocalTime.now())
                 )).from(restaurant)
                 .leftJoin(review).on(restaurant.restaurantId.eq(review.restaurant.restaurantId))
-                .leftJoin(openingTime).on(restaurant.restaurantId.eq(openingTime.restaurant.restaurantId)
+                .leftJoin(openingTime)
+                .on(restaurant.restaurantId.eq(openingTime.restaurant.restaurantId)
                         .and(openingTime.day.eq(koreanDay)))
                 .where(restaurant.restaurantId.eq(restaurantId))
                 .orderBy(review.reviewId.desc())
                 .fetchOne()).orElseThrow(() -> new CustomException(ErrorCode.RESTAURANT_INFO_NOT_FOUND));
     }
 
-    private static String getKoreanDay() {
-        LocalDateTime now = LocalDateTime.now();
+    private  NumberExpression<Double> avgReviewStar(QReview review) {
+        return Expressions.numberTemplate(Double.class, "ROUND(COALESCE({0}, 0),1)", review.starPoint.avg()).coalesce(0.0);
+    }
+
+    private BooleanExpression isServicing(QOpeningTime openingTime, String koreanDay, LocalTime nowTime) {
+        return jpaQueryFactory.from(openingTime)
+                .where(openingTime.restaurant.restaurantId.eq(openingTime.restaurant.restaurantId)
+                        .and(openingTime.day.eq(koreanDay)
+                                .and(openingTime.openTime.before(nowTime)
+                                        .and(openingTime.closeTime.after(nowTime)))))
+                .exists();
+    }
+
+    private  String getKoreanDay() {
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Tokyo"));
         DayOfWeek dayOfWeek = now.getDayOfWeek();
         Day day = Day.valueOf(String.valueOf(dayOfWeek));
         return day.getValue();
