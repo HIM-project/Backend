@@ -60,3 +60,8 @@ naver:
  service:
   url: ENC(tnCo2EHPyq0gi+DzTuB8sF3llzu8NnSNXD+sP2/axXS/b2qIXuTQj5ceLcYyERgjWL04oZYuy5+aLi7keJZSF8jD31NnK3VG)
   secretKey: ENC(NwrccBPx5czPQiOR+lRcr2vU6eqKsZI0blFDFONELEJlBH1E11Di4oWh8k45jNgCCxTbhUKLE8M=)
+ jpa:
+  properties:
+   hibernate:
+    show_sql: true
+    format_sql: true

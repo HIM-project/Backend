@@ -1,11 +1,10 @@
 package HIM.project.dto.kakao;
 
-import HIM.project.entity.OpeningTime;
-import HIM.project.entity.Restaurant;
 import HIM.project.entity.type.Day;
 import lombok.*;
 
 import java.sql.Time;
+import java.time.LocalTime;
 import java.util.List;
 
 
@@ -22,8 +21,8 @@ public class OpeningDtoList {
     public static class OpeningDto {
         private Long restaurantId;
         private Day day;
-        private Time open;
-        private Time close;
+        private LocalTime open;
+        private LocalTime close;
     }
 
 }
