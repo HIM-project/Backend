@@ -3,7 +3,6 @@ package HIM.project.dto.kakao;
 import HIM.project.entity.type.Day;
 import lombok.*;
 
-import java.sql.Time;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -23,6 +22,8 @@ public class OpeningDtoList {
         private Day day;
         private LocalTime open;
         private LocalTime close;
+        private LocalTime breakOpen;
+        private LocalTime breakClose;
     }
 
 }

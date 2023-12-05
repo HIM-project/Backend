@@ -91,9 +91,18 @@ public class RestaurantRepositoryImpl implements RestaurantRepositoryCustom {
     private BooleanExpression isServicing(QOpeningTime openingTime, String koreanDay, LocalTime nowTime) {
         return jpaQueryFactory.from(openingTime)
                 .where(openingTime.restaurant.restaurantId.eq(openingTime.restaurant.restaurantId)
-                        .and(openingTime.day.eq(koreanDay)
-                                .and(openingTime.openTime.before(nowTime)
-                                        .and(openingTime.closeTime.after(nowTime)))))
+                        .and(openingTime.day.eq(koreanDay))
+                        .and(
+                                openingTime.openTime.before(nowTime)
+                                        .and(openingTime.closeTime.after(nowTime))
+                                        .and(
+                                                openingTime.breakOpen.isNull()
+                                                        .or(openingTime.breakClose.isNull()
+                                                                .or(openingTime.breakOpen.after(nowTime)
+                                                                        .or(openingTime.breakClose.before(nowTime))))
+                                        )
+                        )
+                )
                 .exists();
     }
 

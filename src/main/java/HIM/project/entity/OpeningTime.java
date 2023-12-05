@@ -6,7 +6,6 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
-import java.sql.Time;
 import java.time.LocalTime;
 
 @NoArgsConstructor
@@ -38,10 +37,10 @@ public class OpeningTime {
     private LocalTime closeTime;
 
     @Column(name = "break_open")
-    private Time breakOpen;
+    private LocalTime breakOpen;
 
     @Column(name = "break_close")
-    private Time breakClose;
+    private LocalTime breakClose;
 
     public static OpeningTime of(Day day, Restaurant restaurant){
         return OpeningTime.builder()
