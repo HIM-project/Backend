@@ -11,6 +11,8 @@ import java.time.LocalTime;
 public class RestaurantInfo {
     private String restaurantName;
 
+    private Long reviewCount;
+
     private Double starPoint;
 
     private String restaurantThumbnail;
@@ -23,8 +25,9 @@ public class RestaurantInfo {
 
     private Boolean servicing;
     @QueryProjection
-    public RestaurantInfo(String restaurantName, Double starPoint, String restaurantThumbnail, String reviewThumbnail, LocalTime restaurantTime, String category, Boolean servicing) {
+    public RestaurantInfo(String restaurantName,Long reviewCount, Double starPoint, String restaurantThumbnail, String reviewThumbnail, LocalTime restaurantTime, String category, Boolean servicing) {
         this.restaurantName = restaurantName;
+        this.reviewCount = reviewCount;
         this.starPoint = starPoint;
         this.restaurantThumbnail = restaurantThumbnail;
         this.reviewThumbnail = reviewThumbnail;

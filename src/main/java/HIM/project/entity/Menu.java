@@ -45,6 +45,10 @@ public class Menu {
     @Column(name = "created_at", nullable = false, updatable = false)
     protected Instant createdAt;
 
+    @Column(name = "sort_number")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer sortNumber;
+
     public static Menu form(MenuDto menuDto, Restaurant restaurant, String foodThumbnail)  {
 
         return Menu.builder()
