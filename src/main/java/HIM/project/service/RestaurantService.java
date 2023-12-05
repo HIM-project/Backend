@@ -87,6 +87,8 @@ public class RestaurantService {
                 if (Objects.equals(dto.getDay().getValue(), openingTime.getDay())) {
                     openingTime.setOpenTime(dto.getOpen());
                     openingTime.setCloseTime(dto.getClose());
+                    openingTime.setBreakOpen(dto.getBreakOpen());
+                    openingTime.setBreakClose(dto.getBreakClose());
                 }
             });
         });
