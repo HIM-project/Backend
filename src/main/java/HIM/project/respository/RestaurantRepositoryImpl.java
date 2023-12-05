@@ -11,6 +11,7 @@ import HIM.project.exception.CustomException;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -68,12 +69,13 @@ public class RestaurantRepositoryImpl implements RestaurantRepositoryCustom {
 
         return Optional.ofNullable(jpaQueryFactory.select(new QRestaurantInfo(
                         restaurant.restaurantName,
+                        reviewCount(review,restaurantId),
                         avgReviewStar(review),
                         restaurant.restaurantThumbnail.coalesce(""),
                         review.reviewThumbnail.max().coalesce(""),
                         openingTime.closeTime.max(),
                         restaurant.category.coalesce(""),
-                        isServicing(openingTime,getKoreanDay(),LocalTime.now())
+                        isServicing(openingTime,getKoreanDay(),LocalTime.now(),restaurantId)
                 )).from(restaurant)
                 .leftJoin(review).on(restaurant.restaurantId.eq(review.restaurant.restaurantId))
                 .leftJoin(openingTime)
@@ -88,9 +90,16 @@ public class RestaurantRepositoryImpl implements RestaurantRepositoryCustom {
         return Expressions.numberTemplate(Double.class, "ROUND(COALESCE({0}, 0),1)", review.starPoint.avg()).coalesce(0.0);
     }
 
-    private BooleanExpression isServicing(QOpeningTime openingTime, String koreanDay, LocalTime nowTime) {
+    private JPAQuery<Long> reviewCount(QReview review, Long restaurantId) {
+        return jpaQueryFactory
+                .select(review.count())
+                .from(review)
+                .where(review.restaurant.restaurantId.eq(restaurantId));
+    }
+
+    private BooleanExpression isServicing(QOpeningTime openingTime, String koreanDay, LocalTime nowTime,Long restaurantId) {
         return jpaQueryFactory.from(openingTime)
-                .where(openingTime.restaurant.restaurantId.eq(openingTime.restaurant.restaurantId)
+                .where(openingTime.restaurant.restaurantId.eq(restaurantId)
                         .and(openingTime.day.eq(koreanDay))
                         .and(
                                 openingTime.openTime.before(nowTime)
