@@ -32,6 +32,8 @@ public class NaverOcrApiService {
     @Value("${naver.service.secretKey}")
     private String naverSecretKey;
 
+
+
     public ResponseDto<?> requestImage(MultipartFile file) {
 
             Result result = getResult(file);
@@ -39,7 +41,7 @@ public class NaverOcrApiService {
         try {
             result.con.connect();
         } catch (IOException e) {
-            log.info("Error",e);
+            log.error("Error",e);
             throw new CustomException(ErrorCode.NAVER_SERVER_ERROR);
         }
 
@@ -56,7 +58,7 @@ public class NaverOcrApiService {
 
             return ResponseDto.success(response.getImages().get(0).getReceipt().getResult().getStoreInfo().getBizNum().getText());
         } catch (IOException e) {
-            log.info("Error",e);
+            log.error("Error",e);
             throw new CustomException(ErrorCode.NAVER_SERVER_ERROR);
         }
         }
@@ -85,7 +87,7 @@ public class NaverOcrApiService {
         try {
             con.setRequestMethod("POST");
         } catch (ProtocolException e) {
-            log.info("Error",e);
+            log.error("Error",e);
             throw new CustomException(ErrorCode.NAVER_SERVER_ERROR);
         }
 
@@ -107,6 +109,7 @@ public class NaverOcrApiService {
         images.put(image);
         json.put("images", images);
         }   catch (JSONException e) {
+            log.error("error" ,e);
             throw new CustomException(ErrorCode.NAVER_SERVER_ERROR);
         }
         String postParams = json.toString();
@@ -153,7 +156,7 @@ public class NaverOcrApiService {
         }
         out.flush();
         } catch (IOException e) {
-            log.info("Error",e);
+            log.error("Error",e);
             throw new CustomException(ErrorCode.NAVER_SERVER_ERROR);
         }
     }
@@ -167,7 +170,7 @@ public class NaverOcrApiService {
             }
             return response.toString();
         } catch (IOException e) {
-            log.info("Error",e);
+            log.error("Error",e);
             throw new CustomException(ErrorCode.NAVER_SERVER_ERROR);
         }
     }
