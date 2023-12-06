@@ -32,4 +32,10 @@ public class MenuController {
     public ResponseDto<?> fetchMenu(@RequestPart(name = "dto") PatchMenuDto patchMenuDto,@RequestParam(name = "file") MultipartFile file){
         return menuService.patchMenu(patchMenuDto,file);
     }
+
+    @GetMapping("restaurant/menu")
+    @Operation(summary = "메뉴 조회")
+    public ResponseDto<?> getMenu(@RequestParam(name = "restaurantId") Long restaurantId){
+        return menuService.getMenu(restaurantId);
+    }
 }

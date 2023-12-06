@@ -5,11 +5,13 @@ import HIM.project.common.ErrorCode;
 import HIM.project.common.ResponseDto;
 import HIM.project.dto.request.MenuDto;
 import HIM.project.dto.request.PatchMenuDto;
+import HIM.project.dto.response.RestaurantMenu;
 import HIM.project.entity.Menu;
 import HIM.project.entity.Restaurant;
 import HIM.project.entity.User;
 import HIM.project.exception.CustomException;
 import HIM.project.respository.MenuRepository;
+import HIM.project.respository.MenuRepositoryImpl;
 import HIM.project.respository.RestaurantRepository;
 import HIM.project.respository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +36,9 @@ public class MenuService {
     private final UserRepository userRepository;
 
     private final MenuRepository menuRepository;
+
+    private final MenuRepositoryImpl menuRepositoryImpl;
+
     public ResponseDto<?> uploadMenu(List<MenuDto> menuDto, Long userId, List<MultipartFile> file) {
 
         User user = userRepository.findAllByUserId(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -55,5 +60,10 @@ public class MenuService {
             s3Service.deleteFile(menu.getFoodThumbnail());
             menu.applyPatch(patchMenuDto,menuThumbnail);
         return ResponseDto.success("성공하였습니다");
+    }
+
+    public ResponseDto<?> getMenu(Long restaurantId) {
+        List<RestaurantMenu> restaurantMenus = menuRepositoryImpl.findAllMenuByRestaurantIdAndIsDeletedIsFalseAndOrderBySortMenu(restaurantId);
+        return ResponseDto.success(restaurantMenus);
     }
 }
