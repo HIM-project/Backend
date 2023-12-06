@@ -6,8 +6,7 @@ import HIM.project.common.ResponseDto;
 import HIM.project.dto.kakao.OpeningDtoList;
 import HIM.project.dto.request.PatchRestaurantDto;
 import HIM.project.dto.request.RegisterDto;
-import HIM.project.dto.response.MyRestaurant;
-import HIM.project.dto.response.RestaurantInfo;
+import HIM.project.dto.response.*;
 import HIM.project.entity.OpeningTime;
 import HIM.project.entity.Restaurant;
 import HIM.project.entity.User;
@@ -106,5 +105,14 @@ public class RestaurantService {
     public ResponseDto<?> getRestaurantInfo(Long restaurantId) {
         RestaurantInfo restaurantInfo = restaurantRepositoryImpl.findByRestaurantId(restaurantId);
         return ResponseDto.success(restaurantInfo);
+    }
+
+    public ResponseDto<?> getRestaurantIntroduction(Long restaurantId) {
+        RestaurantIntroduction restaurantIntroductionByRestaurantId = restaurantRepositoryImpl.findRestaurantIntroductionByRestaurantId(restaurantId);
+        List<OpenTime> openingTimeByRestaurantId = restaurantRepositoryImpl.findOpeningTimeByRestaurantId(restaurantId);
+
+        RestaurantInfoResponse response = new RestaurantInfoResponse(restaurantIntroductionByRestaurantId,openingTimeByRestaurantId);
+
+        return ResponseDto.success(response);
     }
 }

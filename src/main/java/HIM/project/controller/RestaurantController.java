@@ -55,4 +55,10 @@ public class RestaurantController {
     public ResponseDto<?> getRestaurantInfo(@RequestParam Long restaurantId){
         return restaurantService.getRestaurantInfo(restaurantId);
     }
+
+    @GetMapping("/restaurant/introduction")
+    @Operation(summary = "가게 소개")
+    public ResponseDto<?> getRestaurantIntroduction(@RequestParam Long restaurantId){
+        return restaurantService.getRestaurantIntroduction(restaurantId);
+    }
 }
