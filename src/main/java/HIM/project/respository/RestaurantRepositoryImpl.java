@@ -1,10 +1,7 @@
 package HIM.project.respository;
 
 import HIM.project.common.ErrorCode;
-import HIM.project.dto.response.MyRestaurant;
-import HIM.project.dto.response.QMyRestaurant;
-import HIM.project.dto.response.QRestaurantInfo;
-import HIM.project.dto.response.RestaurantInfo;
+import HIM.project.dto.response.*;
 import HIM.project.entity.*;
 import HIM.project.entity.type.Day;
 import HIM.project.exception.CustomException;
@@ -16,6 +13,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
@@ -26,6 +24,7 @@ import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
+@Transactional
 @Slf4j
 public class RestaurantRepositoryImpl implements RestaurantRepositoryCustom {
 
@@ -128,5 +127,49 @@ public class RestaurantRepositoryImpl implements RestaurantRepositoryCustom {
         return Optional.ofNullable(jpaQueryFactory.selectFrom(restaurant)
                 .where(restaurant.restaurantId.eq(restaurantId))
                 .fetchOne()).orElseThrow(() -> new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
+    }
+
+    @Override
+    public RestaurantIntroduction findRestaurantIntroductionByRestaurantId(Long restaurantId) {
+        QRestaurant restaurant = QRestaurant.restaurant;
+        QReview review = QReview.review;
+        QOpeningTime openingTime = QOpeningTime.openingTime;
+
+        String koreanDay = getKoreanDay();
+
+
+        return jpaQueryFactory
+                .select(new QRestaurantIntroduction(
+                        restaurant.restaurantName,
+                        reviewCount(review, restaurantId),
+                        avgReviewStar(review),
+                        restaurant.restaurantThumbnail.coalesce(""),
+                        restaurant.category.coalesce(""),
+                        isServicing(openingTime, getKoreanDay(), LocalTime.now(), restaurantId),
+                        restaurant.restaurantExplanation.coalesce("")
+                ))
+                .from(restaurant)
+                .leftJoin(review).on(restaurant.restaurantId.eq(review.restaurant.restaurantId))
+                .leftJoin(openingTime)
+                .on(restaurant.restaurantId.eq(openingTime.restaurant.restaurantId)
+                        .and(openingTime.day.eq(koreanDay)))
+                .where(restaurant.restaurantId.eq(restaurantId))
+                .fetchOne();
+    }
+
+    @Override
+    public List<OpenTime> findOpeningTimeByRestaurantId(Long restaurantId) {
+        QOpeningTime openingTime = QOpeningTime.openingTime;
+        return jpaQueryFactory
+                .select(new QOpenTime(
+                        openingTime.day,
+                        openingTime.openTime,
+                        openingTime.closeTime,
+                        openingTime.breakOpen,
+                        openingTime.breakClose
+                ))
+                .from(openingTime)
+                .where(openingTime.restaurant.restaurantId.eq(restaurantId))
+                .fetch();
     }
 }
