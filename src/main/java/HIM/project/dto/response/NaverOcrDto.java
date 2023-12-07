@@ -5,12 +5,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.List;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class NaverOcrDto {
 
@@ -30,7 +32,7 @@ public class NaverOcrDto {
     @AllArgsConstructor
     @Getter
     @JsonIgnoreProperties(ignoreUnknown = true)
-
+    @ToString
     public static class Image {
         @JsonProperty("receipt")
         private Receipt receipt;
@@ -54,7 +56,7 @@ public class NaverOcrDto {
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonIgnoreProperties(ignoreUnknown = true)
-
+    @ToString
     @Getter
     public static class Receipt {
         @JsonProperty("meta")
@@ -68,7 +70,6 @@ public class NaverOcrDto {
     @AllArgsConstructor
     @Getter
     @JsonIgnoreProperties(ignoreUnknown = true)
-
     public static class Meta {
         @JsonProperty("estimatedLanguage")
         private String estimatedLanguage;
@@ -78,7 +79,7 @@ public class NaverOcrDto {
     @AllArgsConstructor
     @Getter
     @JsonIgnoreProperties(ignoreUnknown = true)
-
+    @ToString
     public static class Result {
         @JsonProperty("storeInfo")
         private StoreInfo storeInfo;
@@ -97,7 +98,7 @@ public class NaverOcrDto {
     @AllArgsConstructor
     @Getter
     @JsonIgnoreProperties(ignoreUnknown = true)
-
+    @ToString
     public static class StoreInfo {
         @JsonProperty("name")
         private StringObject name;
@@ -120,7 +121,7 @@ public class NaverOcrDto {
     @AllArgsConstructor
     @Getter
     @JsonIgnoreProperties(ignoreUnknown = true)
-
+    @ToString
     public static class PaymentInfo {
         @JsonProperty("date")
         private DateObject date;
@@ -139,7 +140,7 @@ public class NaverOcrDto {
     @AllArgsConstructor
     @Getter
     @JsonIgnoreProperties(ignoreUnknown = true)
-
+    @ToString
     public static class SubResult {
         @JsonProperty("items")
         private List<Item> items;
@@ -149,7 +150,7 @@ public class NaverOcrDto {
     @AllArgsConstructor
     @Getter
     @JsonIgnoreProperties(ignoreUnknown = true)
-
+    @ToString
     public static class Item {
         @JsonProperty("name")
         private StringObject name;
@@ -165,6 +166,7 @@ public class NaverOcrDto {
     @AllArgsConstructor
     @Getter
     @JsonIgnoreProperties(ignoreUnknown = true)
+    @ToString
     public static class Price {
         @JsonProperty("price")
         private FloatObject price;
@@ -177,6 +179,7 @@ public class NaverOcrDto {
     @AllArgsConstructor
     @Getter
     @JsonIgnoreProperties(ignoreUnknown = true)
+    @ToString
 
     public static class TotalPrice {
         @JsonProperty("price")
@@ -186,6 +189,9 @@ public class NaverOcrDto {
     @AllArgsConstructor
     @Getter
     @JsonIgnoreProperties(ignoreUnknown = true)
+    @ToString
+
+
     public static class StringObject {
         @JsonProperty("text")
         private String text;
@@ -210,6 +216,8 @@ public class NaverOcrDto {
     @AllArgsConstructor
     @Getter
     @JsonIgnoreProperties(ignoreUnknown = true)
+    @ToString
+
 
     public static class Formatted {
         @JsonProperty("value")
@@ -220,6 +228,7 @@ public class NaverOcrDto {
     @AllArgsConstructor
     @Getter
     @JsonIgnoreProperties(ignoreUnknown = true)
+    @ToString
 
     public static class BoundingPoly {
         @JsonProperty("vertices")
@@ -230,6 +239,7 @@ public class NaverOcrDto {
     @AllArgsConstructor
     @Getter
     @JsonIgnoreProperties(ignoreUnknown = true)
+    @ToString
 
     public static class Vertex {
         @JsonProperty("x")
@@ -243,6 +253,7 @@ public class NaverOcrDto {
     @AllArgsConstructor
     @Getter
     @JsonIgnoreProperties(ignoreUnknown = true)
+    @ToString
 
     public static class DateObject {
         @JsonProperty("text")
@@ -259,6 +270,7 @@ public class NaverOcrDto {
     @AllArgsConstructor
     @Getter
     @JsonIgnoreProperties(ignoreUnknown = true)
+    @ToString
 
     public static class YearMonthDay {
         @JsonProperty("year")
@@ -275,6 +287,7 @@ public class NaverOcrDto {
     @AllArgsConstructor
     @Getter
     @JsonIgnoreProperties(ignoreUnknown = true)
+    @ToString
 
     public static class TimeObject {
         @JsonProperty("text")
@@ -291,6 +304,7 @@ public class NaverOcrDto {
     @AllArgsConstructor
     @Getter
     @JsonIgnoreProperties(ignoreUnknown = true)
+    @ToString
 
     public static class HourMinuteSecond {
         @JsonProperty("hour")
@@ -307,6 +321,7 @@ public class NaverOcrDto {
     @AllArgsConstructor
     @Getter
     @JsonIgnoreProperties(ignoreUnknown = true)
+    @ToString
 
     public static class CardInfo {
         @JsonProperty("company")
@@ -320,6 +335,7 @@ public class NaverOcrDto {
     @AllArgsConstructor
     @Getter
     @JsonIgnoreProperties(ignoreUnknown = true)
+    @ToString
 
     public static class ValidationResult {
         @JsonProperty("result")
@@ -329,6 +345,7 @@ public class NaverOcrDto {
     @AllArgsConstructor
     @Getter
     @JsonIgnoreProperties(ignoreUnknown = true)
+    @ToString
 
     public static class TelObject {
         @JsonProperty("text")
@@ -345,7 +362,7 @@ public class NaverOcrDto {
     @AllArgsConstructor
     @Getter
     @JsonIgnoreProperties(ignoreUnknown = true)
-
+    @ToString
     public static class BaseObject {
         @JsonProperty("text")
         private String text;
@@ -357,6 +374,8 @@ public class NaverOcrDto {
     @AllArgsConstructor
     @Getter
     @JsonIgnoreProperties(ignoreUnknown = true)
+    @ToString
+
     public static class FloatObject {
         @JsonProperty("text")
         private String text;

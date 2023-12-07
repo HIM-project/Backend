@@ -13,7 +13,7 @@ public interface RestaurantRepositoryCustom {
 
     List<MyRestaurant> findAllByUserUserId(Long userId);
 
-    RestaurantInfo findByRestaurantId(Long restaurantId);
+    RestaurantInfo restaurantInfoFindByRestaurantId(Long restaurantId);
 
     Restaurant findAllByRestaurantId(Long restaurantId);
 
