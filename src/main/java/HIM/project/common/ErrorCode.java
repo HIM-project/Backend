@@ -40,8 +40,9 @@ public enum ErrorCode {
 
 
     MENU_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 메뉴를 찾을 수 없습니다"),
-    MENU_PATCH_FAIL(HttpStatus.INTERNAL_SERVER_ERROR,"해당 메뉴를 수정하는데 실패하였습니다")
+    MENU_PATCH_FAIL(HttpStatus.INTERNAL_SERVER_ERROR,"해당 메뉴를 수정하는데 실패하였습니다"),
 
+    BILLING_HAS_BEEN_REGISTERED(HttpStatus.BAD_REQUEST,"해당 영수증은 이미 등록되어있습니다")
     ,
     NAVER_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 영수증 객체를 찾을 수 없습니다"),
     NAVER_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"영수증 업로드에 실패하였습니다")

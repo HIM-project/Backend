@@ -103,7 +103,7 @@ public class RestaurantService {
     }
 
     public ResponseDto<?> getRestaurantInfo(Long restaurantId) {
-        RestaurantInfo restaurantInfo = restaurantRepositoryImpl.findByRestaurantId(restaurantId);
+        RestaurantInfo restaurantInfo = restaurantRepositoryImpl.restaurantInfoFindByRestaurantId(restaurantId);
         return ResponseDto.success(restaurantInfo);
     }
 

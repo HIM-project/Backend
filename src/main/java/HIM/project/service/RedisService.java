@@ -24,12 +24,24 @@ public class RedisService {
         ValueOperations<String, String> value = redisTemplate.opsForValue();
         value.set(accessToken, accessToken, expirationTime, TimeUnit.SECONDS);
     }
+    public void setConfirmNum(String userId, String time) {
+        ValueOperations<String, String> value = redisTemplate.opsForValue();
+        value.set(userId, time, expirationTime, TimeUnit.SECONDS);
+    }
+
+    public void setUserPermission(String userId, String permission) {
+        ValueOperations<String, String> value = redisTemplate.opsForValue();
+        value.set(userId, permission, expirationTime, TimeUnit.SECONDS);
+    }
 
     public String getValues(String userId) {
         ValueOperations<String, String> values = redisTemplate.opsForValue();
         return values.get(userId);
     }
-
+    public String getConfirmTime(String userId) {
+        ValueOperations<String, String> values = redisTemplate.opsForValue();
+        return values.get(userId);
+    }
     public boolean deleteDictionary(String userId) {
         Boolean delete = redisTemplate.delete(userId);
         return Boolean.TRUE.equals(delete);

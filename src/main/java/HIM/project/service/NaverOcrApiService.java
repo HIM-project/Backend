@@ -1,7 +1,6 @@
 package HIM.project.service;
 
 import HIM.project.common.ErrorCode;
-import HIM.project.common.ResponseDto;
 import HIM.project.dto.response.NaverOcrDto;
 import HIM.project.exception.CustomException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,7 +33,7 @@ public class NaverOcrApiService {
 
 
 
-    public ResponseDto<?> requestImage(MultipartFile file) {
+    public NaverOcrDto requestImage(MultipartFile file) {
 
             Result result = getResult(file);
 
@@ -53,10 +52,8 @@ public class NaverOcrApiService {
             int responseCode = result.con.getResponseCode();
 
             ObjectMapper objectMapper = new ObjectMapper();
-            NaverOcrDto response = objectMapper.readValue(readResponseBody(result.con, responseCode), NaverOcrDto.class);
 
-
-            return ResponseDto.success(response.getImages().get(0).getReceipt().getResult().getStoreInfo().getBizNum().getText());
+            return objectMapper.readValue(readResponseBody(result.con, responseCode), NaverOcrDto.class);
         } catch (IOException e) {
             log.error("Error",e);
             throw new CustomException(ErrorCode.NAVER_SERVER_ERROR);

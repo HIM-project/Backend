@@ -57,8 +57,7 @@ public class RestaurantRepositoryImpl implements RestaurantRepositoryCustom {
                 .fetch()).orElseThrow(() -> new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
     }
 
-    @Override
-    public RestaurantInfo findByRestaurantId(Long restaurantId) {
+    public RestaurantInfo restaurantInfoFindByRestaurantId(Long restaurantId) {
         QRestaurant restaurant = QRestaurant.restaurant;
         QReview review = QReview.review;
         QOpeningTime openingTime = QOpeningTime.openingTime;
